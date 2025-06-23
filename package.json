@@ -1,0 +1,19 @@
+{
+  "name": "apptest",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "start-backend": "npm start --prefix Backend",
+    "start-frontend": "npm start --prefix Frontend/login-app"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "react": "^18.3.1",
+    "react-calendar": "^6.0.0",
+    "react-dom": "^18.3.1"
+  }
+}

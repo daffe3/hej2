@@ -1,0 +1,569 @@
+/* ===== File: Login.css ===== */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: inherit;
+}
+
+.login-box {
+  background: white;
+  padding: 40px 50px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 600;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.login-box input:focus {
+  border-color: #2575fc;
+  outline: none;
+}
+
+.btn-login {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #2575fc;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #195bcc;
+}
+
+.message {
+  margin-top: 15px;
+  color: #e53935; 
+  font-weight: 500;
+}
+
+.register-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.register-link {
+  color: #2575fc;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: #195bcc;
+}
+
+
+/* ===== File: Register.css ===== */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: inherit; 
+}
+
+.register-box {
+  background: white;
+  padding: 40px 50px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+}
+
+.register-box h2 {
+  margin-bottom: 10px;
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.welcome-text {
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #4caf50;
+  line-height: 1.4;
+}
+
+.register-box input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.register-box input:focus {
+  border-color: #38ef7d;
+  outline: none;
+}
+
+.btn-register {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #38ef7d;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-register:hover {
+  background-color: #27ae60;
+}
+
+.message {
+  margin-top: 15px;
+  color: #388e3c; 
+  font-weight: 500;
+}
+
+.login-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.login-link {
+  color: #38ef7d;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #27ae60;
+}
+
+
+/* ===== File: Navbar.css ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a252f; 
+  padding: 14px 30px;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-left {
+  display: flex;
+  gap: 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.nav-link {
+  color: #ecf0f1;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+  user-select: none;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background-color: #3498db;
+  color: white;
+  outline: none;
+  cursor: pointer;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.username {
+  color: #f0f0f0;
+  padding: 6px 12px;
+  background-color: #2f3d4a;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.logout-btn {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 8px 18px;
+  border-radius: 10px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  user-select: none;
+}
+
+.logout-btn:hover,
+.logout-btn:focus {
+  background-color: #c0392b;
+  box-shadow: 0 0 10px rgba(192, 57, 43, 0.7);
+  outline: none;
+}
+
+
+/* ===== File: Dashboard.css ===== */
+.dashboard-container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.clock {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+  color: #555;
+}
+
+.dashboard-main {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.calendar-container {
+  flex: 1 1 300px;
+  max-width: 350px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.delete-btn:hover {
+  color: #c0392b;
+}
+
+.calendar-todo-day {
+  background: #3498db !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+.react-calendar {
+  background-color: #f0f4f8; 
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  color: #333; 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.react-calendar__navigation__label {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.react-calendar__tile {
+  color: #2c3e50; 
+}
+
+.react-calendar__tile:hover {
+  background-color: #2980b9;
+  color: white;
+  border-radius: 8px;
+}
+
+.calendar-todo-day {
+  background: #3498db !important;
+  color: white !important;
+  border-radius: 50% !important;
+}
+
+.react-calendar__tile--active {
+  background-color: #1abc9c;
+  color: white;
+  border-radius: 8px;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  color: #34495e;
+  font-weight: 600;
+}
+
+.react-calendar__navigation button {
+  color: #2c3e50;
+  background: none;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.react-calendar__navigation button:disabled {
+  color: #ccc;
+}
+.todo-item {
+  background: #f0f4f8;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.todo-item span {
+  flex-grow: 1;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.todo-item em {
+  font-weight: 400;
+  font-style: normal;
+  color: #7f8c8d;
+  margin-left: 8px;
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px 8px;
+  color: #3498db;
+  transition: color 0.2s ease;
+}
+
+.delete-btn {
+  color: #e74c3c;
+}
+
+.edit-btn:hover {
+  color: #2980b9;
+}
+
+.delete-btn:hover {
+  color: #c0392b;
+}
+
+.todo-input input[type="text"],
+.todo-input select,
+.todo-input input[type="date"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.todo-input select {
+  width: 120px;
+}
+
+.todo-input input[type="date"] {
+  width: 150px;
+}
+
+.todo-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.todo-input button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.todo-input button:hover {
+  background-color: #2980b9;
+}
+
+.todo-item span em {
+  font-style: normal;
+  padding-left: 8px;
+}
+
+.priority-låg {
+  color: green;
+  font-weight: 600;
+}
+
+.priority-medel {
+  color: orange;
+  font-weight: 600;
+}
+
+.priority-hög {
+  color: red;
+  font-weight: 600;
+}
+
+.category-label {
+  color: #666;
+  font-style: italic;
+  margin-left: 6px;
+}
+
+/* ===== File: Profile.css ===== */
+.profile-container {
+  max-width: 500px;
+  margin: 30px auto;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.profile-container h2 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #117a8b;
+  text-align: center;
+}
+
+.profile-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  margin-bottom: 25px;
+  padding: 12px 20px;
+  background-color: #e9f1f3;
+  border-radius: 8px;
+}
+
+.profile-info label {
+  font-weight: 600;
+}
+
+section {
+  margin-top: 30px;
+}
+
+section h3 {
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #117a8b;
+}
+
+input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="password"]:focus {
+  border-color: #117a8b;
+  outline: none;
+}
+
+button {
+  background-color: #117a8b;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0e5f67;
+}
+
+button[style*="red"] {
+  background-color: #d9534f;
+}
+
+button[style*="red"]:hover {
+  background-color: #b23838;
+}
+
+p {
+  margin-top: 18px;
+  font-weight: 600;
+}
+
+p[style*="green"] {
+  color: #28a745;
+}
+
+p[style*="red"] {
+  color: #dc3545;
+}
+
+a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #117a8b;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #0e5f67;
+}
+
+
