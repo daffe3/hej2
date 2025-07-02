@@ -18,7 +18,7 @@ const pool = new Pool({
 });
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "https://todo-teal-chi-90.vercel.app/",
   credentials: true,
 }));
 
