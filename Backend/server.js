@@ -21,7 +21,10 @@ const pool = new Pool({
 });
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN,
+  origin: [
+    process.env.CORS_ORIGIN,
+    /\.vercel\.app$/
+  ],
   credentials: true,
 }));
 
