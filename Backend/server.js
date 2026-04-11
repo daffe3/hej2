@@ -45,6 +45,21 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+const PING_INTERVAL = 14 * 60 * 1000;
+
+setInterval(async () => {
+  try {
+    await fetch("https://todo-api-nz58.onrender.com/health");
+    console.log("Keep-alive ping skickad");
+  } catch (err) {
+    console.error("Ping misslyckades:", err);
+  }
+}, PING_INTERVAL);
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
 
