@@ -6,6 +6,13 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 require("dotenv").config();
 
+console.log("DB CONFIG:", {
+  host: process.env.PG_HOST,
+  user: process.env.PG_USER,
+  database: process.env.PG_DATABASE,
+  port: process.env.PG_PORT,
+});
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -247,7 +254,6 @@ app.put("/todos/:id", authMiddleware, async (req, res) => {
     res.status(500).json({ error: "Kunde inte uppdatera todo" });
   }
 });
-
 
 app.listen(PORT, () => {
   console.log(`🚀 Servern körs på http://localhost:${PORT}`);
