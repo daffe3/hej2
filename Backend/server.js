@@ -23,7 +23,7 @@ const pool = new Pool({
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
   ssl: {
-    rejectUnauthorized: false 
+    rejectUnauthorized: false
   }
 });
 
@@ -62,6 +62,17 @@ setInterval(async () => {
     console.error("Ping misslyckades:", err);
   }
 }, PING_INTERVAL);
+
+const SUPABASE_PING_INTERVAL = 4 * 24 * 60 * 60 * 1000;
+
+setInterval(async () => {
+  try {
+    await pool.query("SELECT 1");
+    console.log("Supabase ping skickad");
+  } catch (err) {
+    console.error("Supabase ping misslyckades:", err.message);
+  }
+}, SUPABASE_PING_INTERVAL);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
