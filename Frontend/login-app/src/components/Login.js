@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../utils/axiosClient";
 import "./Global.css";
@@ -8,13 +8,6 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      navigate("/dashboard");
-    }
-  }, []);
 
   const handleLogin = async () => {
     setMessage("");
