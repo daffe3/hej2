@@ -30,7 +30,7 @@ export default function Register() {
       <div className="register-box">
         <h2>Skapa konto</h2>
         <p className="welcome-text">
-          Hantera dina anteckningar enkelt och säkert.
+          Hantera dina anteckningar enkelt och säkert. 
         </p>
 
         <input
