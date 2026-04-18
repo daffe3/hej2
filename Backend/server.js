@@ -6,13 +6,6 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 require("dotenv").config();
 
-console.log("DB CONFIG:", {
-  host: process.env.PG_HOST,
-  user: process.env.PG_USER,
-  database: process.env.PG_DATABASE,
-  port: process.env.PG_PORT,
-});
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -22,16 +15,11 @@ const pool = new Pool({
   user: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false }
 });
 
 app.use(cors({
-  origin: [
-    process.env.CORS_ORIGIN,
-    /\.vercel\.app$/
-  ],
+  origin: [process.env.CORS_ORIGIN, /\.vercel\.app$/],
   credentials: true,
 }));
 
@@ -41,7 +29,6 @@ app.use(cookieParser());
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ error: "Ingen token" });
-
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -52,19 +39,18 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+// Keep-alive
 const PING_INTERVAL = 14 * 60 * 1000;
-
 setInterval(async () => {
   try {
     await fetch("https://todo-api-nz58.onrender.com/health");
     console.log("Keep-alive ping skickad");
   } catch (err) {
-    console.error("Ping misslyckades:", err);
+    console.error("Ping misslyckades:", err.message);
   }
 }, PING_INTERVAL);
-
+//same
 const SUPABASE_PING_INTERVAL = 4 * 24 * 60 * 60 * 1000;
-
 setInterval(async () => {
   try {
     await pool.query("SELECT 1");
@@ -74,13 +60,10 @@ setInterval(async () => {
   }
 }, SUPABASE_PING_INTERVAL);
 
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
+app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
-
   try {
     const hash = await bcrypt.hash(password, 10);
     await pool.query(
@@ -96,38 +79,22 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-
   try {
-    const result = await pool.query(
-      "SELECT * FROM users WHERE username = $1",
-      [username]
-    );
+    const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
     const user = result.rows[0];
-
-    if (!user || !user.password_hash) {
+    if (!user || !user.password_hash)
       return res.status(400).json({ error: "Fel användarnamn eller lösenord" });
-    }
-
     const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) {
+    if (!isMatch)
       return res.status(400).json({ error: "Fel användarnamn eller lösenord" });
-    }
-
-    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "15m",
-    });
-
-    const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, {
-      expiresIn: "7d",
-    });
-
+    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
     res.json({ accessToken });
   } catch (err) {
     console.error(err);
@@ -138,12 +105,9 @@ app.post("/login", async (req, res) => {
 app.post("/refresh-token", (req, res) => {
   const token = req.cookies.refreshToken;
   if (!token) return res.status(401).json({ error: "Ingen refresh token" });
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, {
-      expiresIn: "15m",
-    });
+    const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: "15m" });
     res.json({ accessToken: newAccessToken });
   } catch {
     res.status(403).json({ error: "Ogiltig refresh token" });
@@ -157,13 +121,9 @@ app.post("/logout", (req, res) => {
 
 app.get("/profile", authMiddleware, async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT username FROM users WHERE id = $1",
-      [req.userId]
-    );
+    const result = await pool.query("SELECT username FROM users WHERE id = $1", [req.userId]);
     const user = result.rows[0];
     if (!user) return res.status(404).json({ error: "Användare hittades inte" });
-
     res.json({ username: user.username });
   } catch {
     res.status(401).json({ error: "Ogiltig token" });
@@ -172,24 +132,14 @@ app.get("/profile", authMiddleware, async (req, res) => {
 
 app.put("/profile/password", authMiddleware, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-
   try {
-    const result = await pool.query(
-      "SELECT password_hash FROM users WHERE id = $1",
-      [req.userId]
-    );
+    const result = await pool.query("SELECT password_hash FROM users WHERE id = $1", [req.userId]);
     const user = result.rows[0];
     if (!user) return res.status(404).json({ error: "Användare hittades inte" });
-
     const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
     if (!isMatch) return res.status(400).json({ error: "Fel gammalt lösenord" });
-
     const newHash = await bcrypt.hash(newPassword, 10);
-    await pool.query(
-      "UPDATE users SET password_hash = $1 WHERE id = $2",
-      [newHash, req.userId]
-    );
-
+    await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [newHash, req.userId]);
     res.json({ success: true, message: "Lösenord uppdaterat" });
   } catch (err) {
     console.error(err);
@@ -201,7 +151,6 @@ app.delete("/profile", authMiddleware, async (req, res) => {
   try {
     await pool.query("DELETE FROM todos WHERE user_id = $1", [req.userId]);
     await pool.query("DELETE FROM users WHERE id = $1", [req.userId]);
-
     res.json({ success: true, message: "Användare borttagen" });
   } catch (err) {
     console.error(err);
@@ -210,10 +159,9 @@ app.delete("/profile", authMiddleware, async (req, res) => {
 });
 
 app.get("/todos", authMiddleware, async (req, res) => {
-  console.log("GET /todos called for user:", req.userId);
   try {
     const result = await pool.query(
-      "SELECT * FROM todos WHERE user_id = $1 ORDER BY created_at DESC",
+      "SELECT * FROM todos WHERE user_id = $1 ORDER BY created_at ASC, start_time ASC NULLS LAST",
       [req.userId]
     );
     res.json(result.rows);
@@ -224,11 +172,11 @@ app.get("/todos", authMiddleware, async (req, res) => {
 });
 
 app.post("/todos", authMiddleware, async (req, res) => {
-  const { text, created_at, priority = 'medel', category = null } = req.body;
+  const { text, created_at, priority = "medel", category = null, start_time = null, duration_minutes = null, all_day = true } = req.body;
   try {
     await pool.query(
-      "INSERT INTO todos (user_id, text, created_at, priority, category) VALUES ($1, $2, $3, $4, $5)",
-      [req.userId, text, created_at, priority, category]
+      "INSERT INTO todos (user_id, text, created_at, priority, category, start_time, duration_minutes, all_day) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      [req.userId, text, created_at, priority, category, start_time, duration_minutes, all_day]
     );
     res.json({ success: true });
   } catch (err) {
@@ -240,10 +188,7 @@ app.post("/todos", authMiddleware, async (req, res) => {
 app.delete("/todos/:id", authMiddleware, async (req, res) => {
   const todoId = req.params.id;
   try {
-    await pool.query(
-      "DELETE FROM todos WHERE id = $1 AND user_id = $2",
-      [todoId, req.userId]
-    );
+    await pool.query("DELETE FROM todos WHERE id = $1 AND user_id = $2", [todoId, req.userId]);
     res.json({ success: true });
   } catch (err) {
     console.error(err);
@@ -253,11 +198,11 @@ app.delete("/todos/:id", authMiddleware, async (req, res) => {
 
 app.put("/todos/:id", authMiddleware, async (req, res) => {
   const todoId = req.params.id;
-  const { text, priority, category, created_at } = req.body;
+  const { text, priority, category, created_at, start_time = null, duration_minutes = null, all_day = true } = req.body;
   try {
     await pool.query(
-      "UPDATE todos SET text = $1, priority = $2, category = $3, created_at = $4 WHERE id = $5 AND user_id = $6",
-      [text, priority, category, created_at, todoId, req.userId]
+      "UPDATE todos SET text=$1, priority=$2, category=$3, created_at=$4, start_time=$5, duration_minutes=$6, all_day=$7 WHERE id=$8 AND user_id=$9",
+      [text, priority, category, created_at, start_time, duration_minutes, all_day, todoId, req.userId]
     );
     res.json({ success: true });
   } catch (err) {
@@ -267,5 +212,5 @@ app.put("/todos/:id", authMiddleware, async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Servern körs på http://localhost:${PORT}`);
+  console.log(`Servern körs på http://localhost:${PORT}`);
 });
