@@ -16,7 +16,6 @@ import ProfileSettings from "./components/ProfileSettings";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 
-
 function AppWrapper() {
   return (
     <Router>
@@ -47,6 +46,14 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleLogin = (newToken) => {
+    setToken(newToken);
+    axiosClient
+      .get("/profile")
+      .then((res) => setUsername(res.data.username))
+      .catch(() => {});
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -60,7 +67,7 @@ function App() {
       {token && <Navbar username={username} onLogout={handleLogout} />}
 
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/dashboard"
@@ -86,7 +93,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Login />} />
+        <Route path="*" element={<Login onLogin={handleLogin} />} />
       </Routes>
     </>
   );

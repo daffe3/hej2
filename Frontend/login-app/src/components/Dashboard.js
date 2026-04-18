@@ -38,9 +38,7 @@ export default function Dashboard() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchTodos();
-  }, [fetchTodos]);
+  useEffect(() => { fetchTodos(); }, [fetchTodos]);
 
   useEffect(() => {
     const filtered = todos.filter((todo) => {
@@ -58,40 +56,6 @@ export default function Dashboard() {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission();
-  }
-}, []);
-
-useEffect(() => {
-  const showNotification = (todo) => {
-    if (Notification.permission === "granted") {
-      new Notification("Todo påminnelse", {
-        body: `"${todo.text}" är snart aktuell!`,
-        tag: todo.id, 
-      });
-    }
-  };
-
-  const checkReminders = () => {
-    const now = new Date();
-    todos.forEach(todo => {
-      if (!todo.reminderSent && todo.created_at) {
-        const todoDate = new Date(todo.created_at);
-        const diff = Math.abs(todoDate - now);
-        if (diff < 5 * 60 * 1000) {
-          showNotification(todo);
-          todo.reminderSent = true; 
-        }
-      }
-    });
-  };
-
-  const interval = setInterval(checkReminders, 60 * 1000);
-  return () => clearInterval(interval);
-}, [todos]);
 
   const handleAddTodo = async () => {
     if (!newTodo.trim()) return;
@@ -140,8 +104,7 @@ useEffect(() => {
   };
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("sv-SE", {
+    return new Date(dateString).toLocaleDateString("sv-SE", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -163,12 +126,19 @@ useEffect(() => {
     return null;
   };
 
+  const selectedDateLabel = selectedDate.toLocaleDateString("sv-SE", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
   return (
     <div className="dashboard-container">
-      <h2>Att göra idag, {username}!</h2>
-
-      <div className="clock">
-        {time.toLocaleTimeString("sv-SE")} - {time.toLocaleDateString("sv-SE")}
+      <div className="dashboard-header">
+        <h2>Hej, {username}</h2>
+        <span className="clock">
+          {time.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+        </span>
       </div>
 
       <div className="dashboard-main">
@@ -181,16 +151,19 @@ useEffect(() => {
         </div>
 
         <div className="todo-section">
+          <p className="todo-section-header">
+            {selectedDateLabel}
+            {filteredTodos.length > 0 && ` · ${filteredTodos.length} anteckningar`}
+          </p>
+
           <div className="todo-input">
             <input
               type="text"
-              aria-label="Ny anteckning"
               placeholder="Ny anteckning..."
               value={newTodo}
               onChange={(e) => setNewTodo(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleAddTodo();
-              }}
+              onKeyDown={(e) => e.key === "Enter" && handleAddTodo()}
+              aria-label="Ny anteckning"
             />
             <select
               value={priority}
@@ -203,16 +176,17 @@ useEffect(() => {
             </select>
             <input
               type="text"
-              placeholder="Kategori (valfritt)"
+              placeholder="Kategori"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               aria-label="Kategori"
+              style={{ minWidth: "100px", flex: "0 1 120px" }}
             />
             <button onClick={handleAddTodo}>Lägg till</button>
           </div>
 
           {loading ? (
-            <p>Laddar anteckningar...</p>
+            <div className="loading-state">Laddar...</div>
           ) : filteredTodos.length > 0 ? (
             <ul className="todo-list">
               {filteredTodos.map((todo) => (
@@ -228,44 +202,35 @@ useEffect(() => {
                           if (e.key === "Escape") {
                             setEditTodoId(null);
                             setEditText("");
-                            setEditPriority("medel");
-                            setEditCategory("");
-                            setEditDate(new Date());
                           }
                         }}
                         autoFocus
+                        style={{ flex: 1, marginBottom: 0 }}
                       />
                       <select
                         value={editPriority}
                         onChange={(e) => setEditPriority(e.target.value)}
-                        aria-label="Prioritet för redigering"
+                        style={{ padding: "8px", border: "1px solid var(--gray-200)", borderRadius: "2px", fontSize: "0.8125rem" }}
                       >
                         <option value="låg">Låg</option>
                         <option value="medel">Medel</option>
                         <option value="hög">Hög</option>
                       </select>
                       <input
-                        type="text"
-                        placeholder="Kategori (valfritt)"
-                        value={editCategory}
-                        onChange={(e) => setEditCategory(e.target.value)}
-                        aria-label="Kategori för redigering"
-                      />
-                      <input
                         type="date"
                         value={editDate.toISOString().split("T")[0]}
                         onChange={(e) => setEditDate(new Date(e.target.value))}
-                        aria-label="Datum för redigering"
+                        style={{ width: "140px", marginBottom: 0, padding: "8px 0", fontSize: "0.8125rem" }}
                       />
-                      <button onClick={() => handleSaveEdit(todo.id)}>Spara</button>
                       <button
-                        onClick={() => {
-                          setEditTodoId(null);
-                          setEditText("");
-                          setEditPriority("medel");
-                          setEditCategory("");
-                          setEditDate(new Date());
-                        }}
+                        onClick={() => handleSaveEdit(todo.id)}
+                        style={{ padding: "8px 14px", fontSize: "0.8125rem" }}
+                      >
+                        Spara
+                      </button>
+                      <button
+                        onClick={() => { setEditTodoId(null); setEditText(""); }}
+                        style={{ padding: "8px 14px", fontSize: "0.8125rem", background: "transparent", color: "var(--gray-500)", border: "1px solid var(--gray-200)" }}
                       >
                         Avbryt
                       </button>
@@ -273,15 +238,15 @@ useEffect(() => {
                   ) : (
                     <>
                       <span>
-                        {todo.text}{" "}
+                        {todo.text}
                         <span className={`priority-${todo.priority || "medel"}`}>
-                          [{todo.priority}]
+                          {todo.priority}
                         </span>
                         {todo.category && (
-                          <span className="category-label"> - {todo.category}</span>
+                          <span className="category-label">{todo.category}</span>
                         )}
                       </span>
-                      <small> ({formatDate(todo.created_at)})</small>
+                      <small>{formatDate(todo.created_at)}</small>
                       <button
                         className="edit-btn"
                         onClick={() => {
@@ -292,7 +257,7 @@ useEffect(() => {
                           setEditDate(new Date(todo.created_at));
                         }}
                         title="Redigera"
-                        aria-label={`Redigera anteckning: ${todo.text}`}
+                        aria-label={`Redigera: ${todo.text}`}
                       >
                         ✎
                       </button>
@@ -300,9 +265,9 @@ useEffect(() => {
                         className="delete-btn"
                         onClick={() => handleDeleteTodo(todo.id)}
                         title="Ta bort"
-                        aria-label={`Ta bort anteckning: ${todo.text}`}
+                        aria-label={`Ta bort: ${todo.text}`}
                       >
-                        ✖
+                        ✕
                       </button>
                     </>
                   )}
@@ -310,7 +275,7 @@ useEffect(() => {
               ))}
             </ul>
           ) : (
-            <p>Inga anteckningar för detta datum</p>
+            <p className="empty-state">Inga anteckningar för {selectedDateLabel}.</p>
           )}
         </div>
       </div>

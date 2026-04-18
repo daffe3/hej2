@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../utils/axiosClient";
-import "./Global.css"; 
+import "./Global.css";
 
-export default function Login() {
+export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -20,14 +20,10 @@ export default function Login() {
   const handleLogin = async () => {
     setMessage("");
     try {
-      const res = await axiosClient.post("/login", {
-        username,
-        password,
-      });
-
+      const res = await axiosClient.post("/login", { username, password });
       const token = res.data.accessToken || res.data.token;
       localStorage.setItem("accessToken", token);
-      setMessage("Inloggad!");
+      if (onLogin) onLogin(token);
       navigate("/dashboard");
     } catch (err) {
       setMessage(err.response?.data?.error || "Något gick fel");
@@ -37,13 +33,15 @@ export default function Login() {
   return (
     <div className="login-wrapper">
       <div className="login-box">
-        <h2>Logga in</h2>
+        <h2>Välkommen tillbaka</h2>
+        <p className="login-subtitle">Logga in för att se dina anteckningar</p>
 
         <input
           type="text"
           placeholder="Användarnamn"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           autoComplete="username"
         />
 
@@ -52,6 +50,7 @@ export default function Login() {
           placeholder="Lösenord"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           autoComplete="current-password"
         />
 
@@ -62,12 +61,9 @@ export default function Login() {
         {message && <p className="message">{message}</p>}
 
         <p className="register-text">
-          Har du inget konto?{" "}
-          <span
-            className="register-link"
-            onClick={() => navigate("/register")}
-          >
-            Registrera här
+          Inget konto?{" "}
+          <span className="register-link" onClick={() => navigate("/register")}>
+            Registrera dig
           </span>
         </p>
       </div>
