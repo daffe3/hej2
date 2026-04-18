@@ -14,7 +14,6 @@ export default function Login({ onLogin }) {
     if (token) {
       navigate("/dashboard");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogin = async () => {
